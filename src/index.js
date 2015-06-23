@@ -30,7 +30,7 @@ export default class LicenseChecker {
     function exclude(path) {
       const excludes = Array.isArray(options.exclude) ? options.exclude : [options.exclude];
 
-      return excludes.some(it => it.match(path))
+      return excludes.some(it => it.test(path))
     }
 
     compiler.plugin('emit', function (curCompiler, callback) {
@@ -45,17 +45,13 @@ export default class LicenseChecker {
         source: false
       });
 
-      stats.toJson().modules.
+      stats.modules.
         filter(filterModule).
         forEach(function (module) {
           module.reasons.
             filter(filterReasons).
             forEach(function (reason) {
               var userRequest = reason.userRequest.split('/')[0];
-
-              //var filterExcludes = function filterExcludes(exclude) {
-              //  return path.relative(exclude, module.name).indexOf('..') === 0;
-              //};
 
               if (!modules[userRequest] && !exclude(module.name)) {
                 modules[userRequest] = module;
