@@ -47,38 +47,31 @@ export default function (params, modules, callback) {
         throw err;
       }
 
-      data.forEach(function (module) {
-        if (modules[module.name] && !modules[module.name].license) {
-          modules[module.name].license = module;
-        }
-      });
-
-      let result = Object.keys(modules).sort().map(function (moduleId) {
-        let module = modules[moduleId];
-        let sources = module.license.licenseSources;
+      const licences = modules.sort().map(name => data.find(module => module.name === name));
+      const result = licences.map(function (module) {
+        let sources = module.licenseSources;
 
         let licensesCount = sources.package.sources.length +
           sources.license.sources.length +
           sources.readme.sources.length;
 
         if (!licensesCount) {
-          throw new Error('No license found for package ' + moduleId);
+          throw new Error('No license found for package ' + module.name);
         }
 
         let license = chooseLicense(sources.package.sources) ||
           chooseLicense(sources.license.sources) ||
           chooseLicense(sources.readme.sources);
 
-        if (!license){
-          //console.log(sources.license.sources[0].name());
-          throw new Error('No *permissive* license found for package ' + moduleId);
+        if (!license) {
+          throw new Error('No *permissive* license found for package ' + module.name);
         }
 
         return {
           license: license,
-          name: moduleId,
-          version:  module.license.version,
-          url: npmUrlPrefix + moduleId
+          name: module.name,
+          version: module.version,
+          url: npmUrlPrefix + module.name
         }
       });
 
