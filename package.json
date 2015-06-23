@@ -7,7 +7,7 @@
     "lib"
   ],
   "scripts": {
-    "prepublish": "babel --source-maps src --out-dir lib"
+    "prepublish": "babel src --out-dir lib --source-maps"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
