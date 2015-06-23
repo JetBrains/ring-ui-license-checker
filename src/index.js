@@ -33,7 +33,7 @@ export default class LicenseChecker {
 
   apply(compiler) {
     const directory = this.options.directory;
-    const modules = this.options.modules;
+    const additionalModules = this.options.modules;
     const filename = this.options.filename || 'licenses.xml';
     const title = this.options.title || 'Licenses';
 
@@ -58,7 +58,7 @@ export default class LicenseChecker {
           module.reasons.
             filter(LicenseChecker.filterReasons).
             map(reason => reason.userRequest.split('/')[0])
-        ), modules || []);
+        ), additionalModules || []);
 
       const uniqueModules = [...new Set(modules)];
 
