@@ -1,6 +1,5 @@
 import 'babel/polyfill';
-import fs from 'fs';
-import path from 'path';
+import {join} from 'path';
 
 import getLicences from './get-licences';
 import format from './format';
@@ -32,9 +31,9 @@ export default class LicenseChecker {
   }
 
   apply(compiler) {
-    const directory = this.options.directory;
+    const directory = this.options.directory || process.cwd();
     const additionalModules = this.options.modules;
-    const filename = this.options.filename || 'licenses.xml';
+    const filename = this.options.filename || 'third-party-libs.xml';
     const title = this.options.title || 'Licenses';
 
     const production = !this.options.devDependencies;
@@ -73,7 +72,7 @@ export default class LicenseChecker {
           }
 
           writeFile(
-            path.join(compiler.options.output.path, filename),
+            join(compiler.options.output.path, filename),
             formatModules({title, modules}),
             {flags: "w+"},
             callback
