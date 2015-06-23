@@ -40,40 +40,41 @@ function chooseLicense(licences) {
   }
 }
 
-export default function (params, modules, callback) {
+export default function (modules, params, callback) {
   try {
-    nlf.find(params, function processModules(err, data) {
+    nlf.find(params, function processModules(err, licenses) {
       if (err) {
         throw err;
       }
 
-      const licences = modules.sort().map(name => data.find(module => module.name === name));
-      const result = licences.map(function (module) {
-        let sources = module.licenseSources;
+      const result = modules.sort().
+        map(name => licenses.find(module => module.name === name)).
+        map(function (module) {
+          const sources = module.licenseSources;
 
-        let licensesCount = sources.package.sources.length +
-          sources.license.sources.length +
-          sources.readme.sources.length;
+          const licensesCount = sources.package.sources.length +
+            sources.license.sources.length +
+            sources.readme.sources.length;
 
-        if (!licensesCount) {
-          throw new Error('No license found for package ' + module.name);
-        }
+          if (!licensesCount) {
+            throw new Error('No license found for package ' + module.name);
+          }
 
-        let license = chooseLicense(sources.package.sources) ||
-          chooseLicense(sources.license.sources) ||
-          chooseLicense(sources.readme.sources);
+          const license = chooseLicense(sources.package.sources) ||
+            chooseLicense(sources.license.sources) ||
+            chooseLicense(sources.readme.sources);
 
-        if (!license) {
-          throw new Error('No *permissive* license found for package ' + module.name);
-        }
+          if (!license) {
+            throw new Error('No *permissive* license found for package ' + module.name);
+          }
 
-        return {
-          license: license,
-          name: module.name,
-          version: module.version,
-          url: npmUrlPrefix + module.name
-        }
-      });
+          return {
+            license,
+            name: module.name,
+            version: module.version,
+            url: npmUrlPrefix + module.name
+          }
+        });
 
       callback(null, result);
     });

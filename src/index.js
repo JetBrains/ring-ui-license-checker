@@ -3,11 +3,12 @@ import fs from 'fs';
 import path from 'path';
 
 import getLicences from './get-licences';
+import format from './format';
 
 /**
  * @param {Object} options options
  * @param {boolean} options.devDependencies
- * @param {Array|Regexp} options.exclude
+ * @param {Array|RegExp} options.exclude
  * @param {string} options.directory
  */
 export default class LicenseChecker {
@@ -18,6 +19,8 @@ export default class LicenseChecker {
     this.excludes = Array.isArray(exclude) ? exclude : [exclude]
   }
 
+  // TODO Exclude ProvidePlugin requests and aliases
+  // See compiler.options.plugins["0"].definitions
   static filterReasons(reason) {
     return typeof reason.userRequest === 'string' && reason.userRequest.match(/^[^!.\/$][^!?=]*$/);
   }
@@ -29,14 +32,21 @@ export default class LicenseChecker {
   }
 
   apply(compiler) {
-    const options = this.options;
+    const directory = this.options.directory;
+    const modules = this.options.modules;
+    const filename = this.options.filename || 'licenses.xml';
+    const title = this.options.title || 'Licenses';
+
+    const production = !this.options.devDependencies;
+    const formatModules = this.options.format || format;
     const filterModules = this.filterModules.bind(this);
 
     compiler.plugin('emit', function (curCompiler, callback) {
       // FS aliases from webpack.
-      //var mkdirp = compiler.outputFileSystem.mkdirp;
-      //var writeFile = compiler.outputFileSystem.writeFile;
-      let stats = curCompiler.getStats().toJson({
+      const mkdirp = compiler.outputFileSystem.mkdirp;
+      const writeFile = compiler.outputFileSystem.writeFile;
+
+      const stats = curCompiler.getStats().toJson({
         assets: false,
         chunks: false,
         source: false
@@ -44,19 +54,31 @@ export default class LicenseChecker {
 
       const modules = stats.modules.
         filter(filterModules).
-        reduce(function (collected, module) {
-          return collected.concat(module.reasons.
+        reduce((collected, module) => collected.concat(
+          module.reasons.
             filter(LicenseChecker.filterReasons).
-            map(reason => reason.userRequest.split('/')[0]));
-        }, options.modules || []);
+            map(reason => reason.userRequest.split('/')[0])
+        ), modules || []);
 
       const uniqueModules = [...new Set(modules)];
 
-      getLicences({
-        directory: options.directory,
-        production: !options.devDependencies
-      }, uniqueModules, function (err, result) {
-        console.log(result);
+      getLicences(uniqueModules, {directory, production}, function (err, modules) {
+        if (err) {
+          return callback(err);
+        }
+
+        mkdirp(compiler.options.output.path, function (err) {
+          if (err) {
+            return callback(err);
+          }
+
+          writeFile(
+            path.join(compiler.options.output.path, filename),
+            formatModules({title, modules}),
+            {flags: "w+"},
+            callback
+          );
+        })
       })
     });
   }
