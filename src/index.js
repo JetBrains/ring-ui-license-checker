@@ -34,7 +34,8 @@ export default class LicenseChecker {
     const directory = this.options.directory || process.cwd();
     const additionalModules = this.options.modules;
     const filename = this.options.filename || 'third-party-libs.xml';
-    const title = this.options.title || 'Licenses';
+    const pkg = require(join(directory, 'package.json'));
+    const title = this.options.title || pkg.description + ' Front-End Libraries';
 
     const production = !this.options.devDependencies;
     const formatModules = this.options.format || format;
