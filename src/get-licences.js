@@ -49,6 +49,7 @@ export default function (modules, params, callback) {
 
       const result = modules.sort().
         map(name => licenses.find(module => module.name === name)).
+        filter(module => module).
         map(function (module) {
           const sources = module.licenseSources;
 
