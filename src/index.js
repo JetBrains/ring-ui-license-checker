@@ -11,11 +11,12 @@ import format from './format';
  * @param {string} options.directory
  */
 export default class LicenseChecker {
-  constructor(options) {
+  constructor(options = {}) {
     this.options = options;
 
-    const exclude = this.options.exclude;
-    this.excludes = Array.isArray(exclude) ? exclude : [exclude]
+    if (options.exclude) {
+      this.excludes = [].concat(options.exclude)
+    }
   }
 
   // TODO Exclude ProvidePlugin requests and aliases
