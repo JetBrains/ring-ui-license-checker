@@ -14,9 +14,7 @@ export default class LicenseChecker {
   constructor(options = {}) {
     this.options = options;
 
-    if (options.exclude) {
-      this.excludes = [].concat(options.exclude)
-    }
+    this.exclude = options.exclude && [].concat(options.exclude);
   }
 
   // TODO Exclude ProvidePlugin requests and aliases
@@ -28,7 +26,7 @@ export default class LicenseChecker {
   filterModules(module) {
     return (module.built || module.name.indexOf('external ') === 0) &&
       module.name.indexOf('(webpack)') === -1 &&
-      module.reasons.length > 0 && !this.excludes.some(it => it.test(module.name))
+      module.reasons.length > 0 && (!this.exclude || !this.exclude.some(it => it.test(module.name)))
   }
 
   apply(compiler) {
