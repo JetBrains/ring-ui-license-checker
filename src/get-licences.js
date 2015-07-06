@@ -11,6 +11,10 @@ const permissiveLicenses = {
   'ISC': true
 };
 
+const additionalAliases = {
+  'BSD-like' :'BSD-2-Clause'
+};
+
 function url2name(url) {
   return url.split(licenseUrlPrefix)[1];
 }
@@ -27,7 +31,18 @@ function chooseLicense(licences) {
     for (let j = 0; j < names.length; j++) {
       if (names[j]) {
         let url = name2url(names[j]);
-        let canonicalName = url2name(url);
+        let canonicalName;
+
+        if (!url) {
+          canonicalName = additionalAliases[names[j]];
+          url = canonicalName && licenseUrlPrefix + canonicalName;
+        } else {
+          canonicalName = url2name(url);
+        }
+
+        if (!url) {
+          continue;
+        }
 
         if (permissiveLicenses[canonicalName]) {
           return {
