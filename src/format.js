@@ -1,6 +1,6 @@
 export default function format(params) {
   return (
-    `<chapter title="${params.title}" id="${params.title.replace(' ', '_')}">
+    `<chapter title="${params.title}" id="${params.title.replace(/\s+/g, '_')}">
   <table>
     <tr>
       <td>Project</td>
