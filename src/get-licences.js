@@ -2,6 +2,11 @@ import nlf from 'nlf';
 import name2url from 'oss-license-name-to-url';
 
 const licenseUrlPrefix = 'http://opensource.org/licenses/';
+const alternatives = {
+  'http://creativecommons.org/publicdomain/zero/1.0/': 'cc0-1.0',
+  'http://www.wtfpl.net/about/': 'wtfplv2'
+};
+
 const npmUrlPrefix = 'https://www.npmjs.com/package/';
 const permissiveLicenses = {
   'MIT': true,
@@ -16,7 +21,7 @@ const additionalAliases = {
 };
 
 function url2name(url) {
-  return url.split(licenseUrlPrefix)[1];
+  return url.split(licenseUrlPrefix)[1] || alternatives[url];
 }
 
 function chooseLicense(licences) {
