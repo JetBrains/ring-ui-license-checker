@@ -11,6 +11,7 @@ const npmUrlPrefix = 'https://www.npmjs.com/package/';
 const permissiveLicenses = {
   'MIT': true,
   'BSD-2-Clause': true,
+  'BSD-3-Clause': true,
   'Apache-2.0': true,
   'wtfplv2': true,
   'ISC': true
