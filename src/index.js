@@ -16,8 +16,9 @@ export default class LicenseChecker {
 
     this.exclude = options.exclude && [].concat(options.exclude);
     this.excludeUserRequest = options.excludeUserRequest && [].concat(options.excludeUserRequest);
-    this.forceAddPackages = options.forceAddPackages && [].concat(options.forceAddPackages);
-    this.customLicenses = options.customLicenses && [].concat(options.customLicenses);
+    
+    this.forceAddPackages = options.forceAddPackages || [];
+    this.customLicenses = options.customLicenses || [];
   }
 
   // TODO Exclude ProvidePlugin requests and aliases
@@ -65,6 +66,7 @@ export default class LicenseChecker {
             filter(filterReasons).
             map(reason => reason.userRequest.split('/')[0])
         ), additionalModules || []);
+
 
       const modules = foundModules.concat(forceAddPackages);
 
