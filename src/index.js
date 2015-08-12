@@ -15,12 +15,16 @@ export default class LicenseChecker {
     this.options = options;
 
     this.exclude = options.exclude && [].concat(options.exclude);
+    this.excludeUserRequest = options.excludeUserRequest && [].concat(options.excludeUserRequest);
+    this.forceAddPackages = options.forceAddPackages && [].concat(options.forceAddPackages);
+    this.customLicenses = options.customLicenses && [].concat(options.customLicenses);
   }
 
   // TODO Exclude ProvidePlugin requests and aliases
   // See compiler.options.plugins["0"].definitions
-  static filterReasons(reason) {
-    return typeof reason.userRequest === 'string' && reason.userRequest.match(/^[^!.\/$][^!?=]*$/);
+  filterReasons(reason) {
+    return typeof reason.userRequest === 'string' && reason.userRequest.match(/^[^!.\/$][^!?=]*$/) 
+    && (!this.excludeUserRequest || !this.excludeUserRequest.some(it =>it.test(reason.userRequest)));
   }
 
   filterModules(module) {
@@ -39,6 +43,9 @@ export default class LicenseChecker {
     const production = !this.options.devDependencies;
     const formatModules = this.options.format || format;
     const filterModules = this.filterModules.bind(this);
+    const filterReasons = this.filterReasons.bind(this);
+    const forceAddPackages = this.forceAddPackages;
+    const customLicenses = this.customLicenses;
 
     compiler.plugin('emit', function (curCompiler, callback) {
       // FS aliases from webpack.
@@ -51,13 +58,15 @@ export default class LicenseChecker {
         source: false
       });
 
-      const modules = stats.modules.
+      const foundModules = stats.modules.
         filter(filterModules).
         reduce((collected, module) => collected.concat(
           module.reasons.
-            filter(LicenseChecker.filterReasons).
+            filter(filterReasons).
             map(reason => reason.userRequest.split('/')[0])
         ), additionalModules || []);
+
+      const modules = foundModules.concat(forceAddPackages);
 
       const uniqueModules = [...new Set(modules)];
 
@@ -65,6 +74,8 @@ export default class LicenseChecker {
         if (err) {
           return callback(err);
         }
+
+        modules = modules.concat(customLicenses);
 
         mkdirp(compiler.options.output.path, function (err) {
           if (err) {
