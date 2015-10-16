@@ -1,4 +1,4 @@
-import 'babel/polyfill';
+import 'babel-core/polyfill';
 import {join} from 'path';
 
 import getLicences from './get-licences';
@@ -16,7 +16,7 @@ export default class LicenseChecker {
 
     this.exclude = options.exclude && [].concat(options.exclude);
     this.excludeUserRequest = options.excludeUserRequest && [].concat(options.excludeUserRequest);
-    
+
     this.forceAddPackages = options.forceAddPackages || [];
     this.customLicenses = options.customLicenses || [];
   }
@@ -24,7 +24,7 @@ export default class LicenseChecker {
   // TODO Exclude ProvidePlugin requests and aliases
   // See compiler.options.plugins["0"].definitions
   filterReasons(reason) {
-    return typeof reason.userRequest === 'string' && reason.userRequest.match(/^[^!.\/$][^!?=]*$/) 
+    return typeof reason.userRequest === 'string' && reason.userRequest.match(/^[^!.\/$][^!?=]*$/)
     && (!this.excludeUserRequest || !this.excludeUserRequest.some(it =>it.test(reason.userRequest)));
   }
 
