@@ -69,6 +69,7 @@ export default function (modules, params, callback) {
       }
 
       const result = modules.sort().
+        filter(module => module.indexOf('jetbrains-') !== 0 && module.indexOf('ring-ui') !== 0).
         map(name => licenses.find(module => module.name === name)).
         filter(module => module).
         map(function (module) {
