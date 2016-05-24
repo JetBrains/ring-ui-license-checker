@@ -1,9 +1,10 @@
 import nlf from 'nlf';
-import name2url from 'oss-license-name-to-url';
+import ossname2url from 'oss-license-name-to-url';
 
 const licenseUrlPrefix = 'http://opensource.org/licenses/';
 const alternatives = {
   'http://creativecommons.org/publicdomain/zero/1.0/': 'cc0-1.0',
+  'http://unlicense.org/': 'Unlicense',
   'http://www.wtfpl.net/about/': 'wtfplv2'
 };
 
@@ -14,15 +15,24 @@ const permissiveLicenses = {
   'BSD-3-Clause': true,
   'Apache-2.0': true,
   'wtfplv2': true,
-  'ISC': true
+  'ISC': true,
+  'Unlicense': true
 };
 
 const additionalAliases = {
   'BSD-like' :'BSD-2-Clause'
 };
 
+const additionalLicences = {
+  Unlicense: 'http://unlicense.org/'
+};
+
 function url2name(url) {
   return url.split(licenseUrlPrefix)[1] || alternatives[url];
+}
+
+function name2url(name) {
+  return additionalLicences[name] || ossname2url(name);
 }
 
 function chooseLicense(licences) {
