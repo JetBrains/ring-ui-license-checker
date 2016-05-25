@@ -1,5 +1,5 @@
 import 'babel-core/polyfill';
-import {join} from 'path';
+import {join, dirname} from 'path';
 
 import getLicences from './get-licences';
 import format from './format';
@@ -78,14 +78,15 @@ export default class LicenseChecker {
         }
 
         modules = modules.concat(customLicenses);
+        const filePath = join(compiler.options.output.path, filename);
 
-        mkdirp(compiler.options.output.path, function (err) {
+        mkdirp(dirname(filePath), function (err) {
           if (err) {
             return callback(err);
           }
 
           writeFile(
-            join(compiler.options.output.path, filename),
+            filePath,
             formatModules({title, modules}),
             {flags: "w+"},
             callback
