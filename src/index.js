@@ -1,4 +1,4 @@
-import 'babel-core/polyfill';
+import 'babel-polyfill';
 import {join, dirname} from 'path';
 
 import getLicences from './get-licences';
