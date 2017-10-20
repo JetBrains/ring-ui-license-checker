@@ -1,5 +1,5 @@
 {
-  "name": "ring-ui-license-checker",
+  "name": "@jetbrains/ring-ui-license-checker",
   "version": "1.0.13",
   "description": "Ring UI License Checker is webpack plugin intended to generate third-party libraries list with license information from dependency tree",
   "main": "lib/index.js",
@@ -7,7 +7,10 @@
     "lib"
   ],
   "scripts": {
-    "prepublish": "babel src --out-dir lib --source-maps"
+    "build": "babel src --out-dir lib --source-maps",
+    "commit": "git-cz",
+    "prerelease:ci": "npm run build",
+    "release:ci": "standard-version && git push --follow-tags origin master && ci-publish"
   },
   "babel": {
     "presets": [
@@ -28,12 +31,16 @@
   "license": "Apache-2.0",
   "dependencies": {
     "babel-polyfill": "6.16.0",
-    "nlf": "1.3.1-jb",
+    "nlf": "1.4.1",
     "oss-license-name-to-url": "1.2.1"
   },
   "devDependencies": {
     "babel-cli": "6.16.0",
     "babel-plugin-add-module-exports": "0.2.1",
-    "babel-preset-es2015": "6.16.0"
+    "babel-preset-es2015": "6.16.0",
+    "ci-publish": "^1.3.0",
+    "commitizen": "^2.9.6",
+    "cz-conventional-changelog": "^2.0.0",
+    "standard-version": "^4.2.0"
   }
 }
