@@ -64,7 +64,9 @@ export default class LicenseChecker {
         reduce((collected, module) => collected.concat(
           module.reasons.
             filter(filterReasons).
-            map(reason => reason.userRequest.split('/')[0])
+            map(reason => reason.userRequest[0] === '@'
+              ? reason.userRequest.split('/').splice(0, 2).join('/')
+              : reason.userRequest.split('/')[0])
         ), additionalModules || []);
 
 
