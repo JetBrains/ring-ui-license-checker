@@ -47,6 +47,7 @@ export default class LicenseChecker {
     const filterReasons = this.filterReasons.bind(this);
     const forceAddPackages = this.forceAddPackages;
     const customLicenses = this.customLicenses;
+    const surviveLicenseErrors = this.options.surviveLicenseErrors;
 
     compiler.plugin('emit', function (curCompiler, callback) {
       // FS aliases from webpack.
@@ -74,7 +75,7 @@ export default class LicenseChecker {
 
       const uniqueModules = [...new Set(modules)];
 
-      getLicences(uniqueModules, {directory, production}, function (err, modules) {
+      getLicences(uniqueModules, {directory, production, surviveLicenseErrors}, function (err, modules) {
         if (err) {
           return callback(err);
         }

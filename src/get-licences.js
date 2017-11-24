@@ -78,6 +78,15 @@ export default function (modules, params, callback) {
         throw err;
       }
 
+      const throwOrWriteError = (({surviveLicenseErrors = false}) => text => {
+        if (!surviveLicenseErrors) {
+          throw new Error(text);
+        } else {
+          console.error(text);
+        }
+        return text;
+      })(params);
+
       const result = modules.sort().
         filter(module => module.indexOf('jetbrains-') !== 0 && module.indexOf('ring-ui') !== 0).
         map(name => licenses.find(module => module.name === name)).
@@ -89,16 +98,23 @@ export default function (modules, params, callback) {
             sources.license.sources.length +
             sources.readme.sources.length;
 
+          let license;
           if (!licensesCount) {
-            throw new Error('No license found for package ' + module.name);
-          }
+            license = {
+              name: throwOrWriteError('No license found for package ' + module.name),
+              url: 'N/A'
+            };
+          } else {
+            license = chooseLicense(sources.package.sources) ||
+              chooseLicense(sources.license.sources) ||
+              chooseLicense(sources.readme.sources);
 
-          const license = chooseLicense(sources.package.sources) ||
-            chooseLicense(sources.license.sources) ||
-            chooseLicense(sources.readme.sources);
-
-          if (!license) {
-            throw new Error('No *permissive* license found for package ' + module.name);
+            if (!license) {
+              license = {
+                name: throwOrWriteError('No *permissive* license found for package ' + module.name),
+                url: 'N/A'
+              };
+            }
           }
 
           return {
