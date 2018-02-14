@@ -15,7 +15,7 @@ Develop with pleasure(R)
 - `exclude`: RegExp
 - `forceAddPackages`: module[]
 - `customLicenses`: module[]
-- `surviveLicenseErrors`: Boolean[]
+- `surviveLicenseErrors`: Boolean
 
 Options usage and `module` object structure example:
 
