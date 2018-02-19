@@ -25,7 +25,7 @@ const additionalAliases = {
   'W3C-20150513': 'W3C'
 };
 
-const additionalLicences = {
+const additionalLicenses = {
   Unlicense: 'http://unlicense.org/'
 };
 
@@ -34,7 +34,7 @@ function url2name(url) {
 }
 
 function name2url(name) {
-  return additionalLicences[name] || ossname2url(name);
+  return additionalLicenses[name] || ossname2url(name);
 }
 
 function chooseLicense(licences) {
