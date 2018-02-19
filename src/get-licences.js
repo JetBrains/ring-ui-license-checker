@@ -16,11 +16,13 @@ const permissiveLicenses = {
   'Apache-2.0': true,
   'wtfplv2': true,
   'ISC': true,
-  'Unlicense': true
+  'Unlicense': true,
+  'W3C': true
 };
 
 const additionalAliases = {
-  'BSD-like' :'BSD-2-Clause'
+  'BSD-like' :'BSD-2-Clause',
+  'W3C-20150513': 'W3C'
 };
 
 const additionalLicences = {
