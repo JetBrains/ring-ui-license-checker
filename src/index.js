@@ -49,7 +49,7 @@ export default class LicenseChecker {
     const customLicenses = this.customLicenses;
     const surviveLicenseErrors = this.options.surviveLicenseErrors;
 
-    compiler.plugin('emit', function (curCompiler, callback) {
+    const emit =  (curCompiler, callback) =>  {
       // FS aliases from webpack.
       const mkdirp = compiler.outputFileSystem.mkdirp;
       const writeFile = compiler.outputFileSystem.writeFile;
@@ -96,7 +96,13 @@ export default class LicenseChecker {
           );
         })
       })
-    });
+    };
+
+    if (compiler.hooks) {
+      compiler.hooks.emit.tapAsync('RingUiLicenseCheckerPlugin', emit);
+    } else {
+      compiler.plugin('emit', emit);
+    }
   }
 }
 
