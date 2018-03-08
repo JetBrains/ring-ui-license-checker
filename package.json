@@ -1,6 +1,6 @@
 {
   "name": "@jetbrains/ring-ui-license-checker",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Ring UI License Checker is webpack plugin intended to generate third-party libraries list with license information from dependency tree",
   "main": "lib/index.js",
   "files": [
