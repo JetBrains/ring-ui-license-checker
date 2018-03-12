@@ -14,7 +14,7 @@
   },
   "babel": {
     "presets": [
-      "es2015"
+      "@jetbrains/jetbrains"
     ],
     "plugins": [
       "add-module-exports"
@@ -35,9 +35,9 @@
     "oss-license-name-to-url": "1.2.1"
   },
   "devDependencies": {
+    "@jetbrains/babel-preset-jetbrains": "^1.1.1",
     "babel-cli": "6.26.0",
     "babel-plugin-add-module-exports": "0.2.1",
-    "babel-preset-es2015": "6.24.1",
     "ci-publish": "^1.3.0",
     "commitizen": "^2.9.6",
     "cz-conventional-changelog": "^2.1.0",
