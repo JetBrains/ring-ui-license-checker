@@ -14,7 +14,13 @@
   },
   "babel": {
     "presets": [
-      "@jetbrains/jetbrains"
+      "@jetbrains/jetbrains",
+      [
+        "env",
+        {
+          "modules": "commonjs"
+        }
+      ]
     ],
     "plugins": [
       "add-module-exports"
