@@ -36,7 +36,7 @@ export default class LicenseChecker {
 
   apply(compiler) {
     const directory = this.options.directory || process.cwd();
-    const additionalModules = this.options.modules;
+    const additionalModules = this.options.modules || [];
     const filename = this.options.filename || 'third-party-libs.xml';
     const pkg = require(join(directory, 'package.json'));
     const title = this.options.title || pkg.description + ' Front-End Libraries';
@@ -60,16 +60,18 @@ export default class LicenseChecker {
         source: false
       });
 
-      const foundModules = stats.modules.
+      const processModules = modules => modules.
         filter(filterModules).
-        reduce((collected, module) => collected.concat(
-          module.reasons.
+        reduce((collected, module) => ((module.modules
+          ? collected.concat(processModules(module.modules))
+          : collected
+        ).concat(module.reasons.
             filter(filterReasons).
             map(reason => reason.userRequest[0] === '@'
-              ? reason.userRequest.split('/').splice(0, 2).join('/')
-              : reason.userRequest.split('/')[0])
-        ), additionalModules || []);
+                ? reason.userRequest.split('/').splice(0, 2).join('/')
+                : reason.userRequest.split('/')[0]))), []);
 
+      const foundModules = processModules(stats.modules).concat(additionalModules);
 
       const modules = foundModules.concat(forceAddPackages);
 
