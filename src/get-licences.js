@@ -1,5 +1,6 @@
 import nlf from 'nlf';
 import ossname2url from 'oss-license-name-to-url';
+import tsm from 'teamcity-service-messages';
 
 const licenseUrlPrefix = 'http://opensource.org/licenses/';
 const alternatives = {
@@ -82,9 +83,22 @@ export default function (modules, params, callback) {
 
       const throwOrWriteError = (({surviveLicenseErrors = false}) => text => {
         if (!surviveLicenseErrors) {
-          throw new Error(text);
+          if (process.env.TEAMCITY_VERSION) {
+            tsm.buildProblem({
+              description: text
+            })
+          } else {
+            throw new Error(text);
+          }
         } else {
-          console.error(text);
+          if (process.env.TEAMCITY_VERSION) {
+            tsm.message({
+              status: 'ERROR',
+              text
+            })
+          } else {
+            console.error(text);
+          }
         }
         return text;
       })(params);

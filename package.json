@@ -38,7 +38,8 @@
   "dependencies": {
     "babel-polyfill": "6.26.0",
     "nlf": "2.0.1",
-    "oss-license-name-to-url": "1.2.1"
+    "oss-license-name-to-url": "1.2.1",
+    "teamcity-service-messages": "^0.1.9"
   },
   "devDependencies": {
     "@jetbrains/babel-preset-jetbrains": "^1.1.1",
