@@ -16,6 +16,7 @@ Develop with pleasure(R)
 - `forceAddPackages`: module[]
 - `customLicenses`: module[]
 - `surviveLicenseErrors`: Boolean
+- `teamcityMessageStatus`: String - message status to report (NORMAL, WARNING, FAILURE, ERROR)
 
 Options usage and `module` object structure example:
 
