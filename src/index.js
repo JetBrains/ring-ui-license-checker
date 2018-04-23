@@ -48,6 +48,7 @@ export default class LicenseChecker {
     const forceAddPackages = this.forceAddPackages;
     const customLicenses = this.customLicenses;
     const surviveLicenseErrors = this.options.surviveLicenseErrors;
+    const teamcityMessageStatus = this.options.teamcityMessageStatus;
 
     const emit =  (curCompiler, callback) =>  {
       // FS aliases from webpack.
@@ -77,7 +78,7 @@ export default class LicenseChecker {
 
       const uniqueModules = [...new Set(modules)];
 
-      getLicences(uniqueModules, {directory, production, surviveLicenseErrors}, function (err, modules) {
+      getLicences(uniqueModules, {directory, production, surviveLicenseErrors, teamcityMessageStatus}, function (err, modules) {
         if (err) {
           return callback(err);
         }
