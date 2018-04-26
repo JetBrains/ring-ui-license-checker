@@ -20,7 +20,7 @@ Develop with pleasure(R)
 
 Options usage and `module` object structure example:
 
-```
+```javascript
       new LicenseChecker({
         filename: 'third-party-licenses.txt',
         format: params =>

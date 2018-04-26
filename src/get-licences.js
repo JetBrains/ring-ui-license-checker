@@ -1,135 +1,142 @@
-import nlf from 'nlf';
-import ossname2url from 'oss-license-name-to-url';
-import tsm from 'teamcity-service-messages';
+import nlf from 'nlf'
+import ossname2url from 'oss-license-name-to-url'
+import tsm from 'teamcity-service-messages'
 
-const licenseUrlPrefix = 'http://opensource.org/licenses/';
+const licenseUrlPrefix = 'http://opensource.org/licenses/'
 const alternatives = {
   'http://creativecommons.org/publicdomain/zero/1.0/': 'cc0-1.0',
   'http://unlicense.org/': 'Unlicense',
-  'http://www.wtfpl.net/about/': 'wtfplv2'
-};
+  'http://www.wtfpl.net/about/': 'wtfplv2',
+}
 
-const npmUrlPrefix = 'https://www.npmjs.com/package/';
+const npmUrlPrefix = 'https://www.npmjs.com/package/'
 const permissiveLicenses = {
-  'MIT': true,
+  MIT: true,
   'BSD-2-Clause': true,
   'BSD-3-Clause': true,
   'Apache-2.0': true,
-  'wtfplv2': true,
-  'ISC': true,
-  'Unlicense': true,
-  'W3C': true
-};
+  wtfplv2: true,
+  ISC: true,
+  Unlicense: true,
+  W3C: true,
+}
 
 const additionalAliases = {
-  'BSD-like' :'BSD-2-Clause',
-  'W3C-20150513': 'W3C'
-};
+  'BSD-like': 'BSD-2-Clause',
+  'W3C-20150513': 'W3C',
+}
 
 const additionalLicenses = {
-  Unlicense: 'http://unlicense.org/'
-};
+  Unlicense: 'http://unlicense.org/',
+}
 
 function url2name(url) {
-  return url.split(licenseUrlPrefix)[1] || alternatives[url];
+  return url.split(licenseUrlPrefix)[1] || alternatives[url]
 }
 
 function name2url(name) {
-  return additionalLicenses[name] || ossname2url(name);
+  return additionalLicenses[name] || ossname2url(name)
 }
-
+/* eslint-disable-next-line complexity*/
 function chooseLicense(licences) {
   for (let i = 0; i < licences.length; i++) {
-    let license = licences[i];
-    let names = license.license && [license.license] || typeof license.names === 'function' && license.names();
+    const license = licences[i]
+    const names =
+      (license.license && [license.license]) ||
+      (typeof license.names === 'function' && license.names())
 
     if (!names) {
-      return;
+      return
     }
 
     for (let j = 0; j < names.length; j++) {
       if (names[j]) {
-        let url = name2url(names[j]);
-        let canonicalName;
+        let url = name2url(names[j])
+        let canonicalName
 
         if (!url) {
-          canonicalName = additionalAliases[names[j]];
-          url = canonicalName && licenseUrlPrefix + canonicalName;
+          canonicalName = additionalAliases[names[j]]
+          url = canonicalName && licenseUrlPrefix + canonicalName
         } else {
-          canonicalName = url2name(url);
+          canonicalName = url2name(url)
         }
 
         if (!url) {
-          continue;
+          continue
         }
 
         if (permissiveLicenses[canonicalName]) {
+          /* eslint-disable-next-line consistent-return */
           return {
             name: canonicalName,
-            url: license.url !== '(none)' && license.url || url
-          };
+            url: (license.url !== '(none)' && license.url) || url,
+          }
         }
       }
     }
   }
 }
 
-export default function (modules, params, callback) {
+export default function(modules, params, callback) {
   try {
     nlf.find(params, function processModules(err, licenses) {
       if (err) {
-        throw err;
+        throw err
       }
 
-      const throwOrWriteError = (({surviveLicenseErrors = false, teamcityMessageStatus = 'ERROR'}) => text => {
+      const throwOrWriteError = (({
+        surviveLicenseErrors = false,
+        teamcityMessageStatus = 'ERROR',
+      }) => text => {
         if (!surviveLicenseErrors) {
           if (process.env.TEAMCITY_VERSION) {
             tsm.buildProblem({
-              description: text
+              description: text,
             })
           } else {
-            throw new Error(text);
+            throw new Error(text)
           }
+        } else if (process.env.TEAMCITY_VERSION) {
+          tsm.message({
+            status: teamcityMessageStatus,
+            text,
+          })
         } else {
-          if (process.env.TEAMCITY_VERSION) {
-            tsm.message({
-              status: teamcityMessageStatus,
-              text
-            })
-          } else {
-            console.error(text);
-          }
+          console.error(text)
         }
-        return text;
-      })(params);
+        return text
+      })(params)
 
-      const result = modules.sort().
-        filter(module => module.indexOf('jetbrains-') !== 0 && module.indexOf('ring-ui') !== 0).
-        map(name => licenses.find(module => module.name === name)).
-        filter(module => module).
-        map(function (module) {
-          const sources = module.licenseSources;
+      const result = modules
+        .sort()
+        .filter(module => module.indexOf('jetbrains-') !== 0 && module.indexOf('ring-ui') !== 0)
+        .map(name => licenses.find(module => module.name === name))
+        .filter(module => module)
+        .map(module => {
+          const sources = module.licenseSources
 
-          const licensesCount = sources.package.sources.length +
+          const licensesCount =
+            sources.package.sources.length +
             sources.license.sources.length +
-            sources.readme.sources.length;
+            sources.readme.sources.length
 
-          let license;
+          let license
           if (!licensesCount) {
             license = {
-              name: throwOrWriteError('No license found for package ' + module.name),
-              url: 'N/A'
-            };
+              name: throwOrWriteError(`No license found for package ${module.name}`),
+              url: 'N/A',
+            }
           } else {
-            license = chooseLicense(sources.package.sources) ||
+            license =
+              chooseLicense(sources.package.sources) ||
               chooseLicense(sources.license.sources) ||
-              chooseLicense(sources.readme.sources);
+              chooseLicense(sources.readme.sources)
 
             if (!license) {
               license = {
-                name: throwOrWriteError('No *permissive* license found for package ' + module.name),
-                url: 'N/A'
-              };
+                name: throwOrWriteError(`No *permissive* license found for package ${module.name}`),
+                url: 'N/A',
+              }
             }
           }
 
@@ -137,14 +144,13 @@ export default function (modules, params, callback) {
             license,
             name: module.name,
             version: module.version,
-            url: npmUrlPrefix + module.name
+            url: npmUrlPrefix + module.name,
           }
-        });
+        })
 
-      callback(null, result);
-    });
+      callback(null, result)
+    })
   } catch (e) {
-    callback(e);
+    callback(e)
   }
 }
-
