@@ -8,6 +8,7 @@
   ],
   "scripts": {
     "build": "babel src --out-dir lib --source-maps",
+    "precommit": "npm run lint",
     "commit": "git-cz",
     "prerelease:ci": "npm run build",
     "release:ci": "standard-version && git push --follow-tags origin master && ci-publish",
@@ -56,6 +57,7 @@
     "eslint-config-prettier": "^2.9.0",
     "eslint-plugin-import": "^2.11.0",
     "eslint-plugin-prettier": "^2.6.0",
+    "husky": "^0.14.3",
     "prettier": "^1.12.1",
     "standard-version": "^4.3.0"
   }
