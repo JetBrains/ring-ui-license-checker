@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.3.0"></a>
+# [1.3.0](https://github.com/JetBrains/ring-ui-license-checker/compare/v1.2.3...v1.3.0) (2018-04-28)
+
+
+### Bug Fixes
+
+* **security:** add yarn.lock and use `yarn resolutions` to avoid vulnerable versions of deps ([7207b45](https://github.com/JetBrains/ring-ui-license-checker/commit/7207b45))
+
+
+### Features
+
+* use TeamCity service messages when TEAMCITY_VERSION is set ([da1e745](https://github.com/JetBrains/ring-ui-license-checker/commit/da1e745))
+* **conf:** make TC message level configurable via teamcityMessageStatus param ([2d2a40d](https://github.com/JetBrains/ring-ui-license-checker/commit/2d2a40d))
+
+
+
 <a name="1.2.3"></a>
 ## [1.2.3](https://github.com/JetBrains/ring-ui-license-checker/compare/v1.2.2...v1.2.3) (2018-04-12)
 
