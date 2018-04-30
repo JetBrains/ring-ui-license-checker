@@ -55,6 +55,7 @@ export default class LicenseChecker {
     const forceAddPackages = this.forceAddPackages
     const customLicenses = this.customLicenses
     const surviveLicenseErrors = this.options.surviveLicenseErrors
+    const ignoreTeamcity = Boolean(this.options.ignoreTeamcity)
     const teamcityMessageStatus = this.options.teamcityMessageStatus
 
     const emit = (curCompiler, callback) => {
@@ -93,7 +94,7 @@ export default class LicenseChecker {
 
       getLicences(
         uniqueModules,
-        {directory, production, surviveLicenseErrors, teamcityMessageStatus},
+        {directory, production, surviveLicenseErrors, ignoreTeamcity, teamcityMessageStatus},
         (getLicencesError, _modules) => {
           if (getLicencesError) {
             return callback(getLicencesError)

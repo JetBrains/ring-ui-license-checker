@@ -87,16 +87,17 @@ export default function(modules, params, callback) {
       const throwOrWriteError = (({
         surviveLicenseErrors = false,
         teamcityMessageStatus = 'ERROR',
+        ignoreTeamcity = false,
       }) => text => {
         if (!surviveLicenseErrors) {
-          if (process.env.TEAMCITY_VERSION) {
+          if (!ignoreTeamcity && process.env.TEAMCITY_VERSION) {
             tsm.buildProblem({
               description: text,
             })
           } else {
             throw new Error(text)
           }
-        } else if (process.env.TEAMCITY_VERSION) {
+        } else if (!ignoreTeamcity && process.env.TEAMCITY_VERSION) {
           tsm.message({
             status: teamcityMessageStatus,
             text,
