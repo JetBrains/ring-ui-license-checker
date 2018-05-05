@@ -8,7 +8,7 @@ import format from './format'
 /**
  * @param {Object} options options
  * @param {boolean} options.devDependencies if devDependencies should be processed
- * @param {Array|RegExp} options.exclude modeules to exclude
+ * @param {Array|RegExp} options.exclude modules to exclude
  * @param {string} options.directory working directory
  */
 export default class LicenseChecker {
@@ -108,7 +108,12 @@ export default class LicenseChecker {
               return callback(mkdirError)
             }
 
-            writeFile(filePath, formatModules({title, allModules}), {flags: 'w+'}, callback)
+            writeFile(
+              filePath,
+              formatModules({title, modules: allModules}),
+              {flags: 'w+'},
+              callback,
+            )
             return undefined
           })
           return undefined
