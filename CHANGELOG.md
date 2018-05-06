@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.4.0"></a>
+# [1.4.0](https://github.com/JetBrains/ring-ui-license-checker/compare/v1.3.0...v1.4.0) (2018-05-06)
+
+
+### Bug Fixes
+
+* fix typo and formatModules method API ([3f99a8f](https://github.com/JetBrains/ring-ui-license-checker/commit/3f99a8f))
+
+
+### Features
+
+* **config:** allow to disable TC integration ([4ccee98](https://github.com/JetBrains/ring-ui-license-checker/commit/4ccee98))
+
+
+
 <a name="1.3.0"></a>
 # [1.3.0](https://github.com/JetBrains/ring-ui-license-checker/compare/v1.2.3...v1.3.0) (2018-04-28)
 
