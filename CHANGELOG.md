@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.5.1"></a>
+## [1.5.1](https://github.com/JetBrains/ring-ui-license-checker/compare/v1.4.1...v1.5.1) (2019-04-18)
+
+
+
 <a name="1.4.1"></a>
 ## [1.4.1](https://github.com/JetBrains/ring-ui-license-checker/compare/v1.4.0...v1.4.1) (2018-08-10)
 
