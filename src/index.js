@@ -33,11 +33,12 @@ export default class LicenseChecker {
   }
 
   filterModules(module) {
+    const modulePath = module.identifier || module.name
     return (
       (module.built || module.name.indexOf('external ') === 0) &&
       module.name.indexOf('(webpack)') === -1 &&
       module.reasons.length > 0 &&
-      (!this.exclude || !this.exclude.some(it => it.test(module.name)))
+      (!this.exclude || !this.exclude.some(it => it.test(modulePath)))
     )
   }
 
