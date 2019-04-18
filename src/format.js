@@ -5,17 +5,17 @@ export default function format(params) {
       <td>Project</td>
       <td>Version</td>
       <td>License</td>
-    </tr>${params.modules
-      .map(
-        module =>
-          `
+    </tr>${params.modules.
+    map(
+      module =>
+        `
     <tr>
       <td><a href="${module.url}">${module.name}</a></td>
       <td>${module.version}</td>
       <td><a href="${module.license.url}">${module.license.name}</a></td>
     </tr>`,
-      )
-      .join('')}
+    ).
+    join('')}
   </table>
 </chapter>`
 }

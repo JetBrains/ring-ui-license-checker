@@ -6,7 +6,7 @@ const licenseUrlPrefix = 'http://opensource.org/licenses/'
 const alternatives = {
   'http://creativecommons.org/publicdomain/zero/1.0/': 'cc0-1.0',
   'http://unlicense.org/': 'Unlicense',
-  'http://www.wtfpl.net/about/': 'wtfplv2',
+  'http://www.wtfpl.net/about/': 'wtfplv2'
 }
 
 const npmUrlPrefix = 'https://www.npmjs.com/package/'
@@ -18,16 +18,16 @@ const permissiveLicenses = {
   wtfplv2: true,
   ISC: true,
   Unlicense: true,
-  W3C: true,
+  W3C: true
 }
 
 const additionalAliases = {
   'BSD-like': 'BSD-2-Clause',
-  'W3C-20150513': 'W3C',
+  'W3C-20150513': 'W3C'
 }
 
 const additionalLicenses = {
-  Unlicense: 'http://unlicense.org/',
+  Unlicense: 'http://unlicense.org/'
 }
 
 function url2name(url) {
@@ -69,7 +69,7 @@ function chooseLicense(licences) {
           /* eslint-disable-next-line consistent-return */
           return {
             name: canonicalName,
-            url: (license.url !== '(none)' && license.url) || url,
+            url: (license.url !== '(none)' && license.url) || url
           }
         }
       }
@@ -77,7 +77,7 @@ function chooseLicense(licences) {
   }
 }
 
-export default function(modules, params, callback) {
+export default function (modules, params, callback) {
   try {
     nlf.find(params, function processModules(err, licenses) {
       if (err) {
@@ -87,12 +87,12 @@ export default function(modules, params, callback) {
       const throwOrWriteError = (({
         surviveLicenseErrors = false,
         teamcityMessageStatus = 'ERROR',
-        ignoreTeamcity = false,
+        ignoreTeamcity = false
       }) => text => {
         if (!surviveLicenseErrors) {
           if (!ignoreTeamcity && process.env.TEAMCITY_VERSION) {
             tsm.buildProblem({
-              description: text,
+              description: text
             })
           } else {
             throw new Error(text)
@@ -100,7 +100,7 @@ export default function(modules, params, callback) {
         } else if (!ignoreTeamcity && process.env.TEAMCITY_VERSION) {
           tsm.message({
             status: teamcityMessageStatus,
-            text,
+            text
           })
         } else {
           console.error(text)
@@ -108,12 +108,12 @@ export default function(modules, params, callback) {
         return text
       })(params)
 
-      const result = modules
-        .sort()
-        .filter(module => module.indexOf('jetbrains-') !== 0 && module.indexOf('ring-ui') !== 0)
-        .map(name => licenses.find(module => module.name === name))
-        .filter(module => module)
-        .map(module => {
+      const result = modules.
+        sort().
+        filter(module => module.indexOf('jetbrains-') !== 0 && module.indexOf('ring-ui') !== 0).
+        map(name => licenses.find(module => module.name === name)).
+        filter(module => module).
+        map(module => {
           const sources = module.licenseSources
 
           const licensesCount =
@@ -125,7 +125,7 @@ export default function(modules, params, callback) {
           if (!licensesCount) {
             license = {
               name: throwOrWriteError(`No license found for package ${module.name}`),
-              url: 'N/A',
+              url: 'N/A'
             }
           } else {
             license =
@@ -136,7 +136,7 @@ export default function(modules, params, callback) {
             if (!license) {
               license = {
                 name: throwOrWriteError(`No *permissive* license found for package ${module.name}`),
-                url: 'N/A',
+                url: 'N/A'
               }
             }
           }
@@ -145,7 +145,7 @@ export default function(modules, params, callback) {
             license,
             name: module.name,
             version: module.version,
-            url: npmUrlPrefix + module.name,
+            url: npmUrlPrefix + module.name
           }
         })
 

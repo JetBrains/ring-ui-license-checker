@@ -67,7 +67,7 @@ export default class LicenseChecker {
       const stats = curCompiler.getStats().toJson({
         assets: false,
         chunks: false,
-        source: false,
+        source: false
       })
 
       const processModules = modules =>
@@ -76,12 +76,12 @@ export default class LicenseChecker {
             (module.modules ? collected.concat(processModules(module.modules)) : collected).concat(
               module.reasons.filter(filterReasons).map(
                 reason =>
-                  reason.userRequest[0] === '@'
-                    ? reason.userRequest
-                        .split('/')
-                        .splice(0, 2)
-                        .join('/')
-                    : reason.userRequest.split('/')[0],
+                  (reason.userRequest[0] === '@'
+                    ? reason.userRequest.
+                      split('/').
+                      splice(0, 2).
+                      join('/')
+                    : reason.userRequest.split('/')[0]),
               ),
             ),
           [],

@@ -4,24 +4,16 @@
   "extends": [
     "@jetbrains",
     "@jetbrains/eslint-config/node",
-    "@jetbrains/eslint-config/es6",
-    "prettier"
-  ],
-  "plugins": [
-    "prettier"
+    "@jetbrains/eslint-config/es6"
   ],
   "rules": {
+    "semi": "off",
+    "max-len": ["error", 100, {
+      "ignoreComments": true,
+      "ignoreTemplateLiterals": true,
+      "ignoreRegExpLiterals": true
+    }],
     "import/no-commonjs": "off",
-    "prettier/prettier": [
-      "error",
-      {
-        "printWidth": 100,
-        "semi": false,
-        "singleQuote": true,
-        "trailingComma": "all",
-        "bracketSpacing": false
-      }
-    ],
     "import/no-extraneous-dependencies": [
       "error",
       {
