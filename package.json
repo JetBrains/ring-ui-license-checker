@@ -16,11 +16,15 @@
   },
   "babel": {
     "presets": [
-      "@jetbrains/jetbrains",
       [
-        "env",
+        "@babel/preset-env",
         {
-          "modules": "commonjs"
+          "modules": "commonjs",
+          "useBuiltIns": "usage",
+          "corejs": 3,
+          "targets": {
+            "node": 8
+          }
         }
       ]
     ],
@@ -38,18 +42,18 @@
   "author": "JetBrains",
   "license": "Apache-2.0",
   "dependencies": {
-    "babel-polyfill": "6.26.0",
+    "core-js": "^3.1.4",
     "nlf": "2.1.1",
     "oss-license-name-to-url": "1.2.1",
     "teamcity-service-messages": "^0.1.10"
   },
   "devDependencies": {
-    "@jetbrains/babel-preset-jetbrains": "^1.1.1",
+    "@babel/cli": "^7.5.5",
+    "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
     "@jetbrains/eslint-config": "^4.0.5",
-    "babel-cli": "6.26.0",
     "babel-eslint": "^10.0.1",
     "babel-plugin-add-module-exports": "1.0.2",
-    "babel-preset-env": "^1.7.0",
     "commitizen": "^4.0.3",
     "cz-conventional-changelog": "^2.1.0",
     "eslint": "^5.16.0",

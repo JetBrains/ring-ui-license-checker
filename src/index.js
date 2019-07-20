@@ -1,5 +1,4 @@
 /*eslint no-magic-numbers: ["error", { "ignore": [0,1,-1,2] }]*/
-import 'babel-polyfill'
 import {join, dirname} from 'path'
 
 import getLicences from './get-licences'
