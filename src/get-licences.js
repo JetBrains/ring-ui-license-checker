@@ -56,14 +56,10 @@ function chooseLicense(licences) {
         let canonicalName
 
         if (!url) {
-          canonicalName = additionalAliases[names[j]]
-          url = canonicalName && licenseUrlPrefix + canonicalName
+          canonicalName = additionalAliases[names[j]] || [names[j]
+          url = licenseUrlPrefix + canonicalName
         } else {
           canonicalName = url2name(url)
-        }
-
-        if (!url) {
-          continue
         }
 
         if (permissiveLicenses[canonicalName]) {
