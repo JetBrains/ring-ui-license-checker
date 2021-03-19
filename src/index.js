@@ -60,7 +60,7 @@ export default class LicenseChecker {
 
     const emit = (curCompiler, callback) => {
       // FS aliases from webpack.
-      const mkdirp = compiler.outputFileSystem.mkdirp
+      const mkdir = compiler.outputFileSystem.mkdir
       const writeFile = compiler.outputFileSystem.writeFile
 
       const stats = curCompiler.getStats().toJson({
@@ -103,9 +103,9 @@ export default class LicenseChecker {
           const allModules = _modules.concat(customLicenses)
           const filePath = join(compiler.options.output.path, filename)
 
-          mkdirp(dirname(filePath), mkdirError => {
-            if (mkdirError) {
-              return callback(mkdirError)
+          mkdir(dirname(filePath), {recursive: true}, mkdirError => {
+            if (mkdirError && mkdirError.code !== 'EEXIST') {
+              return callback(mkdirError);
             }
 
             writeFile(
