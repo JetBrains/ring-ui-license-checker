@@ -41,3 +41,24 @@ ${mod.license.name} (${mod.license.url})`,
         surviveLicenseErrors: true,
       }),
 ```
+
+#### Vite
+
+The same checker is available as a Vite/Rollup plugin, imported from the
+`/vite` subpath. It walks the Rollup module graph (all loaded modules,
+including externalized dependencies) instead of webpack stats;
+`devDependencies` and the webpack-specific `excludeUserRequest` filter don't
+apply. `exclude` here is matched against resolved module ids.
+
+```javascript
+import licenseChecker from '@jetbrains/ring-ui-license-checker/vite'
+
+export default {
+  plugins: [
+    licenseChecker({
+      filename: 'third-party-libs.xml',
+      forceAddPackages: ['some-runtime-dep'],
+    }),
+  ],
+}
+```

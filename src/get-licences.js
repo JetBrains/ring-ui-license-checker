@@ -78,75 +78,80 @@ export default function (modules, params, callback) {
   try {
     nlf.find(params, function processModules(err, licenses) {
       if (err) {
-        throw err
+        return callback(err)
       }
 
-      const throwOrWriteError = (({
-        surviveLicenseErrors = false,
-        teamcityMessageStatus = 'ERROR',
-        ignoreTeamcity = false
-      }) => text => {
-        if (!surviveLicenseErrors) {
-          if (!ignoreTeamcity && process.env.TEAMCITY_VERSION) {
-            tsm.buildProblem({
-              description: text
+      let result
+      try {
+        const throwOrWriteError = (({
+          surviveLicenseErrors = false,
+          teamcityMessageStatus = 'ERROR',
+          ignoreTeamcity = false
+        }) => text => {
+          if (!surviveLicenseErrors) {
+            if (!ignoreTeamcity && process.env.TEAMCITY_VERSION) {
+              tsm.buildProblem({
+                description: text
+              })
+            } else {
+              throw new Error(text)
+            }
+          } else if (!ignoreTeamcity && process.env.TEAMCITY_VERSION) {
+            tsm.message({
+              status: teamcityMessageStatus,
+              text
             })
           } else {
-            throw new Error(text)
+            console.error(text)
           }
-        } else if (!ignoreTeamcity && process.env.TEAMCITY_VERSION) {
-          tsm.message({
-            status: teamcityMessageStatus,
-            text
-          })
-        } else {
-          console.error(text)
-        }
-        return text
-      })(params)
+          return text
+        })(params)
 
-      const result = modules.
-        sort().
-        filter(module => module.indexOf('jetbrains-') !== 0 && module.indexOf('ring-ui') !== 0).
-        map(name => licenses.find(module => module.name === name)).
-        filter(module => module).
-        map(module => {
-          const sources = module.licenseSources
+        result = modules.
+          sort().
+          filter(module => module.indexOf('jetbrains-') !== 0 && module.indexOf('ring-ui') !== 0).
+          map(name => licenses.find(module => module.name === name)).
+          filter(module => module).
+          map(module => {
+            const sources = module.licenseSources
 
-          const licensesCount =
+            const licensesCount =
             sources.package.sources.length +
             sources.license.sources.length +
             sources.readme.sources.length
 
-          let license
-          if (!licensesCount) {
-            license = {
-              name: throwOrWriteError(`No license found for package ${module.name}`),
-              url: 'N/A'
-            }
-          } else {
-            license =
+            let license
+            if (!licensesCount) {
+              license = {
+                name: throwOrWriteError(`No license found for package ${module.name}`),
+                url: 'N/A'
+              }
+            } else {
+              license =
               chooseLicense(sources.package.sources) ||
               chooseLicense(sources.license.sources) ||
               chooseLicense(sources.readme.sources)
 
-            if (!license) {
-              license = {
-                name: throwOrWriteError(`No *permissive* license found for package ${module.name}`),
-                url: 'N/A'
+              if (!license) {
+                license = {
+                  name: throwOrWriteError(`No *permissive* license found for package ${module.name}`),
+                  url: 'N/A'
+                }
               }
             }
-          }
 
-          return {
-            license,
-            name: module.name,
-            version: module.version,
-            url: npmUrlPrefix + module.name
-          }
-        })
+            return {
+              license,
+              name: module.name,
+              version: module.version,
+              url: npmUrlPrefix + module.name
+            }
+          })
 
-      callback(null, result)
+      } catch (e) {
+        return callback(e)
+      }
+      return callback(null, result)
     })
   } catch (e) {
     callback(e)
