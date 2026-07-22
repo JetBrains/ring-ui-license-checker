@@ -4,7 +4,7 @@ import {builtinModules} from 'module'
 import getLicences from './get-licences'
 import format from './format'
 
-const builtins = new Set(builtinModules)
+const builtins = new Set(builtinModules || [])
 
 // `fs`, `path`, `fs/promises`, `node:fs` -> true
 function isBuiltin(id) {
