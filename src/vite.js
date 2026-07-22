@@ -15,7 +15,7 @@ function isBuiltin(id) {
 // node_modules/@scope/pkg/dist/x.js -> @scope/pkg ; node_modules/pkg/x.js -> pkg
 // bare external id (react, @scope/pkg) -> same. builtins & relative -> null.
 export function packageNameFromId(id, isExternal) {
-  const parts = id.split('node_modules/')
+  const parts = id.split(/node_modules[\\/]/)
   let head
   if (parts.length > 1) {
     head = parts[parts.length - 1]
@@ -24,7 +24,7 @@ export function packageNameFromId(id, isExternal) {
   } else {
     return null
   }
-  const seg = head.split('/')
+  const seg = head.split(/[\\/]/)
   return seg[0][0] === '@' ? `${seg[0]}/${seg[1]}` : seg[0]
 }
 
