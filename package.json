@@ -4,10 +4,12 @@
   "description": "Ring UI License Checker is webpack plugin intended to generate third-party libraries list with license information from dependency tree",
   "main": "lib/index.js",
   "files": [
-    "lib"
+    "lib",
+    "vite.js"
   ],
   "scripts": {
     "build": "babel src --out-dir lib --source-maps",
+    "test": "npm run build && node test/vite.test.js",
     "precommit": "npm run lint",
     "commit": "git-cz",
     "prerelease:ci": "npm run build",
